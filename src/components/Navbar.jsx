@@ -7,12 +7,11 @@ import { logo, menu, close } from "../assets";
 
 const Navbar = () => {
   const [active, setActive] = useState("");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
     <nav
-      className={`
-        ${styles.paddingX} w-full flex
-        items-center py-5 fixed top-0 z-20
-        bg-primary`}
+      className={`${styles.paddingX} w-full flex items-center py-5 fixed top-0 z-20 bg-primary`}
     >
       <div className="w-full flex justify-between items-center max-w-7xl mx-auto">
         <Link
@@ -24,12 +23,20 @@ const Navbar = () => {
           }}
         >
           <img src={logo} alt="logo" className="w-9 h-9 object-contain" />
-          <p className="text-white text-[18px] font-bold cursor-pointer">
-            Portfolio <span className="sm:block hidden">| Zihan Qiu</span>
-          </p>
+          <div className="text-white text-[18px] font-bold cursor-pointer flex sm:flex-row flex-col">
+            <span>Portfolio</span>
+            <span className="sm:ml-1 sm:mt-0 mt-1">| Zihan Qiu</span>
+          </div>
         </Link>
-        <ul className="list-none hidden sm:flex 
-        flex-row gap-10">
+        {/* Menu icon for mobile */}
+        <button
+          className="sm:hidden focus:outline-none"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          <img src={isMenuOpen ? close : menu} alt="menu" className="w-6 h-6" />
+        </button>
+        {/* Menu items for desktop */}
+        <ul className="hidden sm:flex sm:flex-row sm:gap-10">
           {navLinks.map((link) => (
             <li
               key={link.id}
@@ -37,9 +44,34 @@ const Navbar = () => {
                 active === link.title
                   ? "text-white"
                   : "text-secondary"
-              } hover:text-white text-[18px] font-medium cursor-pointer`}
+              } hover:text-white text-[18px] font-bold cursor-pointer`}
             >
               <a href={`#${link.id}`}>{link.title}</a>
+            </li>
+          ))}
+        </ul>
+        {/* Menu items for mobile */}
+        <ul
+          className={`fixed top-14 right-4 mt-2 bg-primary p-4 rounded-md shadow-lg sm:hidden transform transition-opacity duration-300 ${
+            isMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+        >
+          {navLinks.map((link) => (
+            <li key={link.id}>
+              <a
+                href={`#${link.id}`}
+                className={`${
+                  active === link.title
+                    ? "text-white"
+                    : "text-secondary"
+                } hover:text-white text-[18px] font-bold cursor-pointer block mb-3`}
+                onClick={() => {
+                  setActive(link.title);
+                  setIsMenuOpen(false);
+                }}
+              >
+                {link.title}
+              </a>
             </li>
           ))}
         </ul>
